@@ -73,6 +73,8 @@ def main():
         opt = conf.PACSOpt
     elif 'vlcs' in conf.args.dataset:
         opt = conf.VLCSOpt
+    elif 'cassava' in conf.args.dataset:
+        opt = conf.CassavaOpt
     elif 'office_home' in conf.args.dataset:
         opt = conf.OfficeHomeOpt
     elif 'domainnet-126' in conf.args.dataset:
@@ -118,6 +120,9 @@ def main():
     elif conf.args.model == "vitbase16":
         from models.ViT import vit_b_16
         model = vit_b_16
+    elif conf.args.model == "efficientnet_b0":
+        from models.EfficientNet import EfficientNetB0Dropout
+        model = EfficientNetB0Dropout
     else:
         raise NotImplementedError
 
@@ -254,7 +259,7 @@ def main():
                                                                                                 conf.args.opt['file_path'],
                                                                                                 batch_size=conf.args.opt[
                                                                                                     'batch_size'],
-                                                                                                valid_split=0,
+                                                                                                valid_split=0.15,
                                                                                                 # valid_split=0.3,
                                                                                                 # to be used for the validation
                                                                                                 test_split=0, is_src=True,
@@ -330,7 +335,12 @@ def main():
             best_epoch = -1
 
             for epoch in range(start_epoch, conf.args.epoch + 1):
-                learner.train(epoch)
+                _, val_acc = learner.train(epoch)
+                if val_acc > best_acc:
+                    best_acc = val_acc
+                    best_epoch = epoch
+                    learner.save_checkpoint(epoch=epoch, epoch_acc=val_acc, best_acc=best_acc,
+                                            checkpoint_path=checkpoint_path + 'cp_best.pth.tar')
 
             learner.save_checkpoint(epoch=0, epoch_acc=-1, best_acc=best_acc,
                                     checkpoint_path=checkpoint_path + 'cp_last.pth.tar')

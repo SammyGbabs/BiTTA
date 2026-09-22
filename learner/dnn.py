@@ -93,6 +93,8 @@ class DNN():
                     raise model_()
             elif conf.args.model == "resnet50_domainnet":
                 model = model_()
+            elif conf.args.model == "efficientnet_b0":
+                model = model_(num_classes=conf.args.opt['num_class'])
             else:
                 model = model_(filter=filter_)
 
@@ -107,6 +109,8 @@ class DNN():
                 model.fc = nn.Linear(num_feats, num_class)
                 self.net = model
         elif conf.args.model in ["vitbase16", "vitbase16_pretrained"]:
+            self.net = model
+        elif conf.args.model == "efficientnet_b0":
             self.net = model
 
         if conf.args.load_checkpoint_path:
@@ -613,8 +617,9 @@ class DNN():
                               val_acc_avg=total_num_correct_val/total_num_samples_val if total_num_samples_val != 0 else 0,
         )
         avg_loss = class_loss_sum / total_iter
+        val_acc = float(total_num_correct_val / total_num_samples_val) if total_num_samples_val != 0 else 0.0
 
-        return avg_loss
+        return avg_loss, val_acc
 
     def logger(self, name, value, epoch, condition):
         """

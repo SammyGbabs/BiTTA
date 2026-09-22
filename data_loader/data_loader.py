@@ -10,6 +10,7 @@ from .TINYIMAGENETDataset import TinyImageNetDataset
 from .CIFAR10Dataset import CIFAR10Dataset
 from .CIFAR100Dataset import CIFAR100Dataset
 from .PACSDataset import PacsDataset
+from .CassavaDataset import CassavaDataset
 from .VLCSDataset import VlcsDataset
 from .DOMAINNET126Dataset import DOMAINNET126Dataset
 from .IMAGENETRDataset import ImageNetRDataset
@@ -157,7 +158,7 @@ def domain_data_loader(dataset, domains, file_path, batch_size, train_max_rows=n
         elif isinstance(domains, (list,)):
             processed_domains = domains
             if len(domains) > 1:
-                if dataset not in ['pacs', 'vlcs', 'cifar10']:
+                if dataset not in ['pacs', 'vlcs', 'cifar10', 'cassava']:
                     raise NotImplementedError
         else:
             processed_domains = [domains]
@@ -267,6 +268,21 @@ def domain_data_loader(dataset, domains, file_path, batch_size, train_max_rows=n
         train_data = loaded_data
         entire_datasets.append(train_data)
         
+    elif dataset in ['cassava']:
+
+        cond = processed_domains
+
+        transform = 'src' if is_src else 'val'
+
+        loaded_data = load_cache(dataset, processed_domains, file_path, transform=transform)
+
+        if not loaded_data:
+            loaded_data = CassavaDataset(file=file_path, domains=cond, max_source=num_source, transform=transform)
+            save_cache(loaded_data, dataset, processed_domains, file_path, transform=transform)
+
+        train_data = loaded_data
+        entire_datasets.append(train_data)
+
     elif dataset in ['vlcs']:
         
         cond = processed_domains

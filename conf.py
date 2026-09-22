@@ -443,3 +443,19 @@ CONT_SEQUENCE_DOMAINNET126 = {
 }
 
 
+
+CassavaOpt = {
+    'name': 'cassava',
+    'batch_size': 64,
+    'learning_rate': 0.001,
+    'weight_decay': 0,
+    'momentum': 0.9,
+    'img_size': 224,
+    'file_path': './dataset/cassava',
+    'classes': ['cbb', 'cbsd', 'cgm', 'cmd', 'healthy'],
+    'num_class': 5,
+    'severity': None,
+    'domains': ["leaf2020", "icassava2019"],
+    'src_domains': ["leaf2020"],
+    'tgt_domains': ["icassava2019"],
+}
