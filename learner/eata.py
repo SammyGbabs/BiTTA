@@ -5,6 +5,7 @@ from data_loader.CIFAR10Dataset import CIFAR10Dataset
 from data_loader.IMAGENETDataset import ImageNetDataset
 
 from data_loader.PACSDataset import PacsDataset
+from data_loader.CassavaDataset import CassavaDataset
 from data_loader.VLCSDataset import VlcsDataset
 from data_loader.TINYIMAGENETDataset import TinyImageNetDataset
 from data_loader.DOMAINNET126Dataset import DOMAINNET126Dataset
@@ -173,6 +174,8 @@ class EATA(ETA):
             fisher_dataset = DOMAINNET126Dataset(file="", domains=[corruption_list_[0]], max_source=9999, transform='val')
         elif conf.args.dataset == "imagenetR":
             fisher_dataset = ImageNetRDataset(file="", domain=corruption_list_[0], max_source=9999, transform='val')
+        elif conf.args.dataset == "cassava":
+            fisher_dataset = CassavaDataset(file="", domains=[corruption_list_[0]], max_source=9999, transform='val')
         elif conf.args.dataset == "colored-mnist":
             import torchvision.transforms as transforms
             fisher_dataset = ColoredMNISTDataset(root="dataset/colored_mnist", env=corruption_list_[0],# flip=True,
